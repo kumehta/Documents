@@ -1,0 +1,53 @@
+# yum install -y httpd
+# yum install -y createrepo
+
+# mkdir -m 2755 -p /app/sonatype-work/yum-repos
+# mkdir -m 2755 -p /app/sonatype-work/yum-repos/PACKAGES
+
+
+# cd /app/sonatype-work/yum-repos
+# createrepo PACKAGES
+
+
+#########################Copy all required packages in local repo PACKAGES#################
+#cp -p <SOURCE_MEDIA>/Packages/*.rpm /app/sonatype-work/yum-repos/PACKAGES/
+
+
+# find /app/sonatype-work/yum-repos -exec chown apache:apache {} \;
+# find /app/sonatype-work/yum-repos -type d -exec chmod 2755 {} \;
+# find /app/sonatype-work/yum-repos -type f -exec chmod 0644 {} \;
+# find /app/sonatype-work/yum-repos -name \*.rpm -exec chmod 0444 {} \;
+
+
+# cp -p /etc/httpd/conf/httpd.conf /etc/httpd/conf/httpd.conf.default
+
+# vi /etc/httpd/conf/httpd.conf
+   # Configure Apache to listen for http requests only from the business interface.
+  # (Un)comment as requuired.
+  
+  Listen 80
+  
+<Esc>wq!
+
+
+
+# ln -fs /app/sonatype-work/yum-repos /var/www/html/yum-repos
+
+
+# vi /var/www/html/index.html
+  <html>
+      <head>
+          <meta http-equiv=Refresh content="0;url=/yum-repos/">
+      </head>
+  </html>
+<Esc>:wq!
+# chown root:root /var/www/html/index.html
+# chmod 0444 /var/www/html/index.html
+
+# systemctl enable httpd.service
+# systemctl start httpd.service
+
+
+
+
+
